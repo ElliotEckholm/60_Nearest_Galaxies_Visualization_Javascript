@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>CSV Parser</title>
+
+<style type="text/css">
+body { font-family:arial, helvetica, sans-serif; font-weight:normal; font-size:13px; color:#000; text-align:left; margin:3px 0px; }
+#wrap { width:500px; height:500px; margin:20px;  }
+</style>
+</head>
+
+<body>
+
+  <div id="page-wrapper">
+
+          <h1>Text File Reader</h1>
+          <div>
+              Select a text file:
+              <input type="file" id="fileInput">
+          </div>
+          <pre id="fileDisplayArea"><pre>
+
+      </div>
+ <p id="demo"></p>
+<!-- <input type="file" id="file" name="files"/>  -->
+<!-- end wrap -->
+<script>
+window.onload = function() {
+        var fileInput = document.getElementById('fileInput');
+        var fileDisplayArea = document.getElementById('fileDisplayArea');
+
+        fileInput.addEventListener('change', function(e) {
+            var file = fileInput.files[0];
+            var textType = /text.*/;
+
+            if (file.type.match(textType)) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                  //  fileDisplayArea.innerText = reader.result;
+
+
+                    var record_num = 37;  // or however many elements there are in each row
+                    var allTextLines = this.result.split(/\r\n|\n/);
+                    var entries = allTextLines[0].split(',');
+                    var lines = [];
+                    var cols = [];
+                    var posXs = [];
+                    var posYs = [];
+                    var posZs = [];
+
+                    while (entries.length>0) {
+                        var tarr = [];
+                        for (var j=0; j<record_num; j++) {
+                              tarr.push(entries.shift());
+                        }
+                          lines.push(tarr);
+                        }
+
+
+
+
+                        for (var i = 0; i < lines.length; i++){
+                          for (var j = 0; j < lines[i].length; j++){
+                            if (j == 4){
+                              posXs[i] = lines[i][j];
+                            } else if (j == 17){
+                              posYs[i] = lines[i][j];
+                            }else if (j == 29){
+                              posZs[i] = lines[i][j];
+                            }
+                          }
+
+
+                        }
+                        var names = [];
+                        for (var i = 0; i < lines.length; i++){
+                          names[i] = lines[i][0];
+                        }
+                        //fileDisplayArea.innerText = PosXs;
+                        document.getElementById("demo").innerHTML = posXs;
+                }
+
+                reader.readAsText(file);
+            } else {
+                fileDisplayArea.innerText = "File not supported!"
+            }
+        });
+}
+/*
+document.getElementById('file').onchange = function(){
+
+  var file = this.files[0];
+
+  var reader = new FileReader();
+
+  reader.onload = function(progressEvent){
+    // Entire file
+    console.log(this.result);
+
+
+var record_num = 37;  // or however many elements there are in each row
+    var allTextLines = this.result.split(/\r\n|\n/);
+    var entries = allTextLines[0].split(',');
+    var lines = [];
+    var cols = [];
+
+    while (entries.length>0) {
+        var tarr = [];
+        for (var j=0; j<record_num; j++) {
+
+            tarr.push(entries.shift());
+        }
+        lines.push(tarr);
+    }
+
+    var posXs = [];
+    var posYs = [];
+    var posZs = [];
+
+
+    for (var i = 0; i < lines.length; i++){
+      for (var j = 0; j < lines[i].length; j++){
+        if (j == 4){
+          posXs[i] = lines[i][j];
+        } else if (j == 17){
+          posYs[i] = lines[i][j];
+        }else if (j == 29){
+          posZs[i] = lines[i][j];
+        }
+      }
+
+
+    }
+    var names = [];
+    for (var i = 0; i < lines.length; i++){
+      names[i] = lines[i][0];
+    }
+
+
+
+
+};
+
+document.getElementById("demo").innerHTML = lines;
+reader.readAsText(file);
+
+};
+*/
+
+
+ </script>
+
+</body>
+
+</html>
